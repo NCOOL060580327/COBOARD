@@ -2,7 +2,10 @@ package com.example.demo.member.facade;
 
 import org.springframework.stereotype.Component;
 
+import com.example.demo.member.dto.request.LoginRequestDto;
 import com.example.demo.member.dto.request.SignUpMemberRequestDto;
+import com.example.demo.member.dto.response.LoginResponseDto;
+import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.command.AuthCommandService;
 import com.example.demo.member.service.query.MemberQueryService;
 
@@ -25,5 +28,12 @@ public class AuthFacade {
     memberQueryService.isValidEmail(requestDto.email());
 
     authCommandService.signUpMember(requestDto);
+  }
+
+  public LoginResponseDto login(LoginRequestDto requestDto) {
+
+    Member member = memberQueryService.getMemberByEmail(requestDto.email());
+
+    return authCommandService.login(member, requestDto.password());
   }
 }
