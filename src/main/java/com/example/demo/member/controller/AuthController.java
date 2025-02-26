@@ -19,7 +19,7 @@ public class AuthController {
 
   private final AuthFacade authFacade;
 
-  @PostMapping("/join")
+  @PostMapping("/signup")
   public BaseResponse<Void> signUpMember(@RequestBody SignUpMemberRequestDto requestDto) {
     authFacade.signUpMember(requestDto);
     return BaseResponse.onSuccess(GlobalErrorCode.CREATED, null);
