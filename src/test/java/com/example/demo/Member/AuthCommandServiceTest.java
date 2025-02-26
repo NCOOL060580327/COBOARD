@@ -13,9 +13,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.example.demo.global.exception.GlobalErrorCode;
+import com.example.demo.global.exception.custom.AuthException;
+import com.example.demo.global.security.provider.JwtProvider;
 import com.example.demo.member.dto.request.SignUpMemberRequestDto;
+import com.example.demo.member.dto.response.LoginResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.entity.MemberRole;
+import com.example.demo.member.entity.Password;
 import com.example.demo.member.entity.Tier;
 import com.example.demo.member.entity.repository.MemberRepository;
 import com.example.demo.member.service.command.AuthCommandService;
@@ -27,18 +32,24 @@ public class AuthCommandServiceTest {
 
   @Mock private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+  @Mock private JwtProvider jwtProvider;
+
   @InjectMocks private AuthCommandService authCommandService;
 
   private SignUpMemberRequestDto requestDto;
 
+  private final Long testId = Long.parseLong(MemberTestConst.TEST_ID.getValue());
+  private final String testEmail = MemberTestConst.TEST_EMAIL.getValue();
+  private final String testPassword = MemberTestConst.TEST_PASSWORD.getValue();
+  private final String testNickname = MemberTestConst.TEST_NICKNAME.getValue();
+  private final String testProfileImage = MemberTestConst.TEST_PROFILE_IMAGE.getValue();
+  private final String testAccessToken = MemberTestConst.TEST_ACCESS_TOKEN.getValue();
+  private final String testRefreshToken = MemberTestConst.TEST_REFRESH_TOKEN.getValue();
+
   @BeforeEach
   void setUp() {
     requestDto =
-        new SignUpMemberRequestDto(
-            MemberTestConst.TEST_EMAIL.getValue(),
-            MemberTestConst.TEST_PASSWORD.getValue(),
-            MemberTestConst.TEST_NICKNAME.getValue(),
-            MemberTestConst.TEST_PROFILE_IMAGE.getValue());
+        new SignUpMemberRequestDto(testEmail, testPassword, testNickname, testProfileImage);
   }
 
   @Nested
@@ -129,6 +140,74 @@ public class AuthCommandServiceTest {
                     return true;
                   }));
       verify(bCryptPasswordEncoder, times(1)).encode(requestDto.password());
+    }
+  }
+
+  @Nested
+  @DisplayName("로그인 시")
+  class login {
+
+    Member testMember =
+        Member.builder()
+            .id(testId)
+            .email(testEmail)
+            .password(new Password(testPassword))
+            .nickname(testNickname)
+            .profileImage(testProfileImage)
+            .memberRole(MemberRole.USER)
+            .tier(Tier.UNRANK)
+            .build();
+
+    @Test
+    @DisplayName("이메일과 비밀번호를 통해 회원 정보와 토큰을 반환합니다.")
+    void login_Success() {
+      // give
+      String correctPassword = requestDto.password();
+
+      when(testMember.getPassword().isSamePassword(correctPassword, bCryptPasswordEncoder))
+          .thenReturn(true);
+      when(jwtProvider.generateAccessToken(testMember.getId())).thenReturn(testAccessToken);
+      when(jwtProvider.generateRefreshToken(testMember.getId())).thenReturn(testRefreshToken);
+
+      // when
+      LoginResponseDto responseDto = authCommandService.login(testMember, correctPassword);
+
+      // then
+      assertNotNull(responseDto, "응답이 null이면 안 됩니다");
+      assertAll(
+          "로그인 응답 속성 검증",
+          () -> assertEquals(testMember.getId(), responseDto.memberId(), "회원 ID가 일치해야 합니다"),
+          () -> assertEquals(testMember.getNickname(), responseDto.nickname(), "닉네임이 일치해야 합니다"),
+          () ->
+              assertEquals(
+                  testMember.getProfileImage(), responseDto.profileImage(), "프로필 이미지가 일치해야 합니다"),
+          () -> assertEquals(testAccessToken, responseDto.accessToken(), "액세스 토큰이 일치해야 합니다"),
+          () -> assertEquals(testRefreshToken, responseDto.refreshToken(), "리프레시 토큰이 일치해야 합니다"));
+      verify(jwtProvider, times(1)).generateAccessToken(testMember.getId());
+      verify(jwtProvider, times(1)).generateRefreshToken(testMember.getId());
+    }
+
+    @Test
+    @DisplayName("비밀번호가 일치하지 않으면 예외를 발생시킵니다.")
+    void login_Fail() {
+      // give
+      String wrongPassword = testPassword;
+
+      when(testMember.getPassword().isSamePassword(wrongPassword, bCryptPasswordEncoder))
+          .thenReturn(false);
+
+      // when
+      AuthException exception =
+          assertThrows(
+              AuthException.class, () -> authCommandService.login(testMember, wrongPassword));
+
+      // then
+      assertEquals(
+          GlobalErrorCode.NOT_VALID_PASSWORD,
+          exception.getErrorCode(),
+          "에러 코드는 NOT_VALID_PASSWORD이어야 합니다");
+      verify(jwtProvider, never()).generateAccessToken(anyLong());
+      verify(jwtProvider, never()).generateRefreshToken(anyLong());
     }
   }
 }
