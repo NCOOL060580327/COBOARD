@@ -6,7 +6,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.global.exception.GlobalErrorCode;
+import com.example.demo.global.exception.custom.AuthException;
+import com.example.demo.global.security.provider.JwtProvider;
 import com.example.demo.member.dto.request.SignUpMemberRequestDto;
+import com.example.demo.member.dto.response.LoginResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.entity.MemberRole;
 import com.example.demo.member.entity.Password;
@@ -22,6 +26,7 @@ public class AuthCommandService {
 
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final JwtProvider jwtProvider;
 
   /**
    * 회원가입 요청 데이터를 기반으로 새로운 회원 엔티티를 생성합니다.
@@ -59,5 +64,24 @@ public class AuthCommandService {
    */
   public void signUpMember(SignUpMemberRequestDto requestDto) {
     memberRepository.save(createMember(requestDto, MemberRole.USER));
+  }
+
+  /**
+   * 주어진 회원과 비밀번호로 로그인 처리를 수행합니다.
+   *
+   * @param member 로그인 대상 회원 엔티티
+   * @param password 입력된 비밀번호
+   * @return 로그인 성공 시 생성된 {@link LoginResponseDto} (액세스 토큰과 리프레시 토큰 포함)
+   */
+  public LoginResponseDto login(Member member, String password) {
+
+    if (!(member.getPassword().isSamePassword(password, bCryptPasswordEncoder))) {
+      throw new AuthException(GlobalErrorCode.NOT_VALID_PASSWORD);
+    }
+
+    String accessToken = jwtProvider.generateAccessToken(member.getId());
+    String refreshToken = jwtProvider.generateRefreshToken(member.getId());
+
+    return LoginResponseDto.from(member, accessToken, refreshToken);
   }
 }
