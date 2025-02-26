@@ -1,5 +1,7 @@
 package com.example.demo.member.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +22,10 @@ public class AuthController {
   private final AuthFacade authFacade;
 
   @PostMapping("/signup")
-  public BaseResponse<Void> signUpMember(@RequestBody SignUpMemberRequestDto requestDto) {
+  public ResponseEntity<BaseResponse<Void>> signUpMember(
+      @RequestBody SignUpMemberRequestDto requestDto) {
     authFacade.signUpMember(requestDto);
-    return BaseResponse.onSuccess(GlobalErrorCode.CREATED, null);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(BaseResponse.onSuccess(GlobalErrorCode.CREATED, null));
   }
 }
