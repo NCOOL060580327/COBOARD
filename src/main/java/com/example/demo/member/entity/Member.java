@@ -3,6 +3,7 @@ package com.example.demo.member.entity;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Member {
 
   @Id
@@ -25,13 +27,14 @@ public class Member {
   @Embedded
   private Password password;
 
+  @Column(nullable = false)
   private String nickname;
 
   @Column(name = "identified_code", unique = true, nullable = false)
   private String identifiedCode;
 
   @Column(name = "profile_image")
-  private String profileImage;
+  private String profileImage = "default-profile.png";
 
   @Enumerated(EnumType.STRING)
   private Tier tier;
