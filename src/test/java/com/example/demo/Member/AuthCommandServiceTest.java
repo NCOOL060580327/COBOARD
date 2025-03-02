@@ -203,7 +203,7 @@ public class AuthCommandServiceTest {
 
       // then
       assertEquals(
-          GlobalErrorCode.NOT_VALID_PASSWORD,
+          GlobalErrorCode.PASSWORD_MISMATCH,
           exception.getErrorCode(),
           "에러 코드는 NOT_VALID_PASSWORD이어야 합니다");
       verify(jwtProvider, never()).generateAccessToken(anyLong());

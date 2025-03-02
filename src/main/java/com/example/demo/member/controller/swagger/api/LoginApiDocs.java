@@ -12,35 +12,35 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-public class SignUpApiDocs {
+public class LoginApiDocs {
 
-  @Operation(summary = "회원가입", description = "새로운 회원을 등록합니다.")
+  @Operation(summary = "로그인", description = "로그인을 합니다.")
   @ApiResponses(
       value = {
         @ApiResponse(
-            responseCode = "201",
-            description = "회원가입 성공",
+            responseCode = "200",
+            description = "로그인 성공",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.SIGNUP_SUCCESS))),
+                    examples = @ExampleObject(value = SwaggerConst.LOGIN_SUCCESS))),
         @ApiResponse(
             responseCode = "400",
-            description = "유효하지 않은 비밀번호",
+            description = "비밀번호 불일치",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
                     examples = @ExampleObject(value = SwaggerConst.PASSWORD_MISMATCH))),
         @ApiResponse(
-            responseCode = "409",
-            description = "이미 존재하는 이메일",
+            responseCode = "404",
+            description = "회원이 존재하지 않음",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.DUPLICATE_EMAIL)))
+                    examples = @ExampleObject(value = SwaggerConst.MEMBER_NOT_FOUND)))
       })
-  public void signUpMember() {}
+  public void login() {}
 }

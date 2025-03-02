@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.global.annotation.SwaggerDocs;
 import com.example.demo.global.exception.GlobalErrorCode;
 import com.example.demo.global.response.BaseResponse;
+import com.example.demo.member.controller.swagger.api.LoginApiDocs;
 import com.example.demo.member.controller.swagger.api.SignUpApiDocs;
 import com.example.demo.member.dto.request.LoginRequestDto;
 import com.example.demo.member.dto.request.SignUpMemberRequestDto;
@@ -35,6 +36,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
+  @SwaggerDocs(LoginApiDocs.class)
   public ResponseEntity<BaseResponse<LoginResponseDto>> login(
       @RequestBody LoginRequestDto requestDto) {
     return ResponseEntity.status(HttpStatus.OK)

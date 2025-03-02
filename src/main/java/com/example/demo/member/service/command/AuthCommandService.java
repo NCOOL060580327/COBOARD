@@ -76,7 +76,7 @@ public class AuthCommandService {
   public LoginResponseDto login(Member member, String password) {
 
     if (!(member.getPassword().isSamePassword(password, bCryptPasswordEncoder))) {
-      throw new AuthException(GlobalErrorCode.NOT_VALID_PASSWORD);
+      throw new AuthException(GlobalErrorCode.PASSWORD_MISMATCH);
     }
 
     String accessToken = jwtProvider.generateAccessToken(member.getId());
