@@ -14,11 +14,6 @@ import com.example.demo.member.dto.request.SignUpMemberRequestDto;
 import com.example.demo.member.dto.response.LoginResponseDto;
 import com.example.demo.member.facade.AuthFacade;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,19 +24,6 @@ public class AuthController {
   private final AuthFacade authFacade;
 
   @PostMapping("/signup")
-  @Operation(summary = "회원가입", description = "새로운 회원을 등록합니다.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "회원가입 성공",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = BaseResponse.class))),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-        @ApiResponse(responseCode = "409", description = "이미 존재하는 이메일")
-      })
   public ResponseEntity<BaseResponse<Void>> signUpMember(
       @RequestBody SignUpMemberRequestDto requestDto) {
     authFacade.signUpMember(requestDto);
