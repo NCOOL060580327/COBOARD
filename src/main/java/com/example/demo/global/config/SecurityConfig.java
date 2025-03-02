@@ -30,7 +30,9 @@ public class SecurityConfig {
   private final JwtAuthExceptionHandlingFilter jwtAuthExceptionHandlingFilter;
 
   private static final String[] ALLOWED_URLS = {"/api/auth/**"};
-  private static final String[] IGNORED_URLS = {"/h2-console/**"};
+  private static final String[] IGNORED_URLS = {
+    "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**"
+  };
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {

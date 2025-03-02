@@ -1,5 +1,7 @@
 package com.example.demo.global.response;
 
+import java.time.LocalDateTime;
+
 import com.example.demo.global.exception.GlobalErrorCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,9 +25,12 @@ public class BaseResponse<T> {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private T data;
 
+  @JsonProperty("timestamp")
+  private final LocalDateTime timestamp;
+
   // 성공한 경우 응답 생성
   public static <T> BaseResponse<T> onSuccess(T data) {
-    return new BaseResponse<>(true, "200", "success", "요청에 성공하였습니다.", data);
+    return new BaseResponse<>(true, "200", "success", "요청에 성공하였습니다.", data, LocalDateTime.now());
   }
 
   public static <T> BaseResponse<T> onSuccess(GlobalErrorCode code, T data) {
@@ -34,7 +39,8 @@ public class BaseResponse<T> {
         String.valueOf(code.getHttpStatus().value()),
         code.getDivideCode(),
         code.getMessage(),
-        data);
+        data,
+        LocalDateTime.now());
   }
 
   // 실패한 경우 응답 생성
@@ -44,6 +50,7 @@ public class BaseResponse<T> {
         String.valueOf(code.getHttpStatus().value()),
         code.getDivideCode(),
         code.getMessage(),
-        data);
+        data,
+        LocalDateTime.now());
   }
 }
