@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.global.annotation.SwaggerDocs;
 import com.example.demo.global.exception.GlobalErrorCode;
 import com.example.demo.global.response.BaseResponse;
+import com.example.demo.member.controller.swagger.api.SignUpApiDocs;
 import com.example.demo.member.dto.request.LoginRequestDto;
 import com.example.demo.member.dto.request.SignUpMemberRequestDto;
 import com.example.demo.member.dto.response.LoginResponseDto;
@@ -24,6 +26,7 @@ public class AuthController {
   private final AuthFacade authFacade;
 
   @PostMapping("/signup")
+  @SwaggerDocs(SignUpApiDocs.class)
   public ResponseEntity<BaseResponse<Void>> signUpMember(
       @RequestBody SignUpMemberRequestDto requestDto) {
     authFacade.signUpMember(requestDto);
