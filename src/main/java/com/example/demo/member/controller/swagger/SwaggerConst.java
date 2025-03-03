@@ -44,8 +44,7 @@ public class SwaggerConst {
             "memberId": 1,
             "nickname": "exampleUser",
             "profileImage": "profile.png",
-            "accessToken": "access-token-value",
-            "refreshToken": "refresh-token-value"
+            "accessToken": "access-token-value"
           }
         }
         """;
@@ -69,5 +68,28 @@ public class SwaggerConst {
           "divideCode": "40401",
           "data": null
         }
-        """;
+      """;
+
+  public static final String REFRESH_SUCCESS =
+      """
+      {
+        "isSuccess": true,
+        "code": "200",
+        "message": "요청 성공",
+        "divideCode": "20001",
+        "data": {
+          "accessToken": "access-token-value"
+        }
+      }
+    """;
+
+  public static final String INVALID_TOKEN =
+      """
+          {
+            "isSuccess": false,
+            "code": "401",
+            "message": "유효하지 않은 토큰입니다.",
+            "divideCode": "40101"
+          }
+          """;
 }

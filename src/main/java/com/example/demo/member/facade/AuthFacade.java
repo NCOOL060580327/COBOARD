@@ -1,10 +1,13 @@
 package com.example.demo.member.facade;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Component;
 
 import com.example.demo.member.dto.request.LoginRequestDto;
 import com.example.demo.member.dto.request.SignUpMemberRequestDto;
-import com.example.demo.member.dto.response.LoginResponseDto;
+import com.example.demo.member.dto.response.LoginWithRefreshResponseDto;
+import com.example.demo.member.dto.response.RefreshResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.command.AuthCommandService;
 import com.example.demo.member.service.query.MemberQueryService;
@@ -30,10 +33,14 @@ public class AuthFacade {
     authCommandService.signUpMember(requestDto);
   }
 
-  public LoginResponseDto login(LoginRequestDto requestDto) {
+  public LoginWithRefreshResponseDto login(LoginRequestDto requestDto) {
 
     Member member = memberQueryService.getMemberByEmail(requestDto.email());
 
     return authCommandService.login(member, requestDto.password());
+  }
+
+  public RefreshResponseDto refresh(HttpServletRequest request) {
+    return authCommandService.refresh(request);
   }
 }
