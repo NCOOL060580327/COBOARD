@@ -1,6 +1,9 @@
 package com.example.demo.member.service.command;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -15,11 +18,9 @@ import com.example.demo.member.dto.request.SignUpMemberRequestDto;
 import com.example.demo.member.dto.response.LoginResponseDto;
 import com.example.demo.member.dto.response.LoginWithRefreshResponseDto;
 import com.example.demo.member.dto.response.RefreshResponseDto;
-import com.example.demo.member.entity.Member;
-import com.example.demo.member.entity.MemberRole;
-import com.example.demo.member.entity.Password;
-import com.example.demo.member.entity.Tier;
+import com.example.demo.member.entity.*;
 import com.example.demo.member.entity.repository.MemberRepository;
+import com.example.demo.member.entity.repository.RefreshTokenBlackListRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthCommandService {
 
   private final MemberRepository memberRepository;
+  private final RefreshTokenBlackListRepository refreshTokenBlackListRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final JwtProvider jwtProvider;
 
@@ -86,21 +88,67 @@ public class AuthCommandService {
     String accessToken = jwtProvider.generateAccessToken(member.getId());
     String refreshToken = jwtProvider.generateRefreshToken(member.getId());
 
+    member.setRefreshToken(refreshToken);
+
+    memberRepository.save(member);
+
     return LoginWithRefreshResponseDto.from(member, accessToken, refreshToken);
   }
 
-  public RefreshResponseDto refresh(HttpServletRequest request) {
+  /**
+   * 주어진 refreshToken을 검증하고, 새 토큰을 발급합니다.
+   *
+   * @param request HTTP 요청(쿠키)
+   * @param member refreshToken과 연결된 회원 정보
+   * @return 새로 발급된 access, refresh 토큰
+   * @throws AuthException {@code GlobalErrorCode.INVALID_TOKEN} - 요청에서 유효한 토큰을 찾지 못한 경우
+   * @throws AuthException {@code GlboalErrorCode.REFRESH_TOKEN_MISMATCH} - 저장된 refreshToken과 요청이 다른
+   *     경우
+   */
+  public RefreshResponseDto refresh(HttpServletRequest request, Member member) {
 
     String refreshToken =
         jwtProvider
             .extractRefreshToken(request)
             .orElseThrow(() -> new AuthException(GlobalErrorCode.INVALID_TOKEN));
 
-    Long memberId = jwtProvider.getSubject(refreshToken);
+    if (!refreshToken.equals(member.getRefreshToken())) {
+      throw new AuthException(GlobalErrorCode.REFRESH_TOKEN_MISMATCH);
+    }
 
-    String newAccessToken = jwtProvider.generateAccessToken(memberId);
-    String newRefreshToken = jwtProvider.generateRefreshToken(memberId);
+    addToBlacklist(refreshToken);
+
+    String newAccessToken = jwtProvider.generateAccessToken(member.getId());
+    String newRefreshToken = jwtProvider.generateRefreshToken(member.getId());
+
+    member.setRefreshToken(newRefreshToken);
 
     return new RefreshResponseDto(newAccessToken, newRefreshToken);
+  }
+
+  /**
+   * 재발급에 사용한 토큰을 BlackList에 저장합니다.
+   *
+   * @param refreshToken
+   * @return
+   * @throws AuthException {@code GlobalErrorCode.ALREADY_BLACKLIST_TOKEN} - 이미 BlackList에 등록되어있는 경우
+   * @throws AuthException {@code GlobalErrorCode.TOKEN_EXPIRED} - 토큰이 만료된 경우
+   */
+  private void addToBlacklist(String refreshToken) {
+    if (refreshTokenBlackListRepository.existsByRefreshToken(refreshToken)) {
+      throw new AuthException(GlobalErrorCode.ALREADY_BLACKLIST_TOKEN);
+    }
+
+    LocalDateTime expiredAt = jwtProvider.getExpiredAt(refreshToken);
+    long expirationMillis = Duration.between(LocalDateTime.now(), expiredAt).toMillis();
+
+    if (expirationMillis <= 0) {
+      throw new AuthException(GlobalErrorCode.TOKEN_EXPIRED);
+    }
+
+    refreshTokenBlackListRepository.save(
+        RefreshTokenBlackList.of(
+            refreshToken,
+            LocalDateTime.now().plusNanos(TimeUnit.MILLISECONDS.toNanos(expirationMillis))));
   }
 }

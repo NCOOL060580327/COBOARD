@@ -220,6 +220,19 @@ public class AuthCommandServiceTest {
   @Nested
   @DisplayName("토큰을 재발급 받을 때")
   class refresh {
+
+    Member testMember =
+        Member.builder()
+            .id(testId)
+            .email(testEmail)
+            .password(new Password(testPassword))
+            .nickname(testNickname)
+            .profileImage(testProfileImage)
+            .memberRole(MemberRole.USER)
+            .refreshToken(testRefreshToken)
+            .tier(Tier.UNRANK)
+            .build();
+
     @Test
     @DisplayName("유효한 refreshToken을 통해 재발급 받습니다.")
     void refresh_Success() {
@@ -231,7 +244,7 @@ public class AuthCommandServiceTest {
       when(jwtProvider.generateRefreshToken(testId)).thenReturn(testRefreshToken);
 
       // when
-      RefreshResponseDto responseDto = authCommandService.refresh(request);
+      RefreshResponseDto responseDto = authCommandService.refresh(request, testMember);
 
       // then
       assertNotNull(responseDto, "응답이 null이면 안 됩니다");
@@ -256,12 +269,37 @@ public class AuthCommandServiceTest {
       AuthException exception =
           assertThrows(
               AuthException.class,
-              () -> authCommandService.refresh(request),
+              () -> authCommandService.refresh(request, testMember),
               "유효하지 않은 토큰으로 예외가 발생해야 합니다");
 
       // then
       assertEquals(
           GlobalErrorCode.INVALID_TOKEN, exception.getErrorCode(), "에러 코드는 INVALID_TOKEN이어야 합니다");
+      verify(jwtProvider, times(1)).extractRefreshToken(request);
+      verify(jwtProvider, never()).getSubject(anyString());
+      verify(jwtProvider, never()).generateAccessToken(anyLong());
+      verify(jwtProvider, never()).generateRefreshToken(anyLong());
+    }
+
+    @Test
+    @DisplayName("토큰이 유효하지 않으면 예외를 발생시킵니다.")
+    void refresh_Fail_Refresh_Token_Mismatch() {
+      // give
+      HttpServletRequest request = mock(HttpServletRequest.class);
+      when(jwtProvider.extractRefreshToken(request)).thenReturn(Optional.of("wrong-token"));
+
+      // when
+      AuthException exception =
+          assertThrows(
+              AuthException.class,
+              () -> authCommandService.refresh(request, testMember),
+              "저장된 refreshToken과 요청된 토큰이 다르면 예외가 발생해야 합니다");
+
+      // then
+      assertEquals(
+          GlobalErrorCode.REFRESH_TOKEN_MISMATCH,
+          exception.getErrorCode(),
+          "에러 코드는 REFRESH_TOKEN_MISMATCH이어야 합니다");
       verify(jwtProvider, times(1)).extractRefreshToken(request);
       verify(jwtProvider, never()).getSubject(anyString());
       verify(jwtProvider, never()).generateAccessToken(anyLong());
