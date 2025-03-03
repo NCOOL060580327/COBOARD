@@ -5,9 +5,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.crypto.SecretKey;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -94,5 +99,16 @@ public class JwtProvider {
       log.warn("유효하지 않은 토큰 형식", e);
       throw new TokenException(GlobalErrorCode.INVALID_TOKEN);
     }
+  }
+
+  /** 쿠키에서 refreshToken 추출 */
+  public Optional<String> extractRefreshToken(HttpServletRequest request) {
+    if (request.getCookies() == null) {
+      return Optional.empty();
+    }
+    return Arrays.stream(request.getCookies())
+        .filter(cookie -> "refreshToken".equals(cookie.getName()))
+        .map(Cookie::getValue)
+        .findFirst();
   }
 }

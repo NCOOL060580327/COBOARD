@@ -3,6 +3,10 @@ package com.example.demo.Member;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,7 +21,8 @@ import com.example.demo.global.exception.GlobalErrorCode;
 import com.example.demo.global.exception.custom.AuthException;
 import com.example.demo.global.security.provider.JwtProvider;
 import com.example.demo.member.dto.request.SignUpMemberRequestDto;
-import com.example.demo.member.dto.response.LoginResponseDto;
+import com.example.demo.member.dto.response.LoginWithRefreshResponseDto;
+import com.example.demo.member.dto.response.RefreshResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.entity.MemberRole;
 import com.example.demo.member.entity.Password;
@@ -170,7 +175,8 @@ public class AuthCommandServiceTest {
       when(jwtProvider.generateRefreshToken(testMember.getId())).thenReturn(testRefreshToken);
 
       // when
-      LoginResponseDto responseDto = authCommandService.login(testMember, correctPassword);
+      LoginWithRefreshResponseDto responseDto =
+          authCommandService.login(testMember, correctPassword);
 
       // then
       assertNotNull(responseDto, "응답이 null이면 안 됩니다");
@@ -206,6 +212,58 @@ public class AuthCommandServiceTest {
           GlobalErrorCode.PASSWORD_MISMATCH,
           exception.getErrorCode(),
           "에러 코드는 NOT_VALID_PASSWORD이어야 합니다");
+      verify(jwtProvider, never()).generateAccessToken(anyLong());
+      verify(jwtProvider, never()).generateRefreshToken(anyLong());
+    }
+  }
+
+  @Nested
+  @DisplayName("토큰을 재발급 받을 때")
+  class refresh {
+    @Test
+    @DisplayName("유효한 refreshToken을 통해 재발급 받습니다.")
+    void refresh_Success() {
+      // give
+      HttpServletRequest request = mock(HttpServletRequest.class);
+      when(jwtProvider.extractRefreshToken(request)).thenReturn(Optional.of(testRefreshToken));
+      when(jwtProvider.getSubject(testRefreshToken)).thenReturn(testId);
+      when(jwtProvider.generateAccessToken(testId)).thenReturn(testAccessToken);
+      when(jwtProvider.generateRefreshToken(testId)).thenReturn(testRefreshToken);
+
+      // when
+      RefreshResponseDto responseDto = authCommandService.refresh(request);
+
+      // then
+      assertNotNull(responseDto, "응답이 null이면 안 됩니다");
+      assertAll(
+          "토큰 갱신 응답 속성 검증",
+          () -> assertEquals(testAccessToken, responseDto.accessToken(), "액세스 토큰이 일치해야 합니다"),
+          () -> assertEquals(testRefreshToken, responseDto.refreshToken(), "리프레시 토큰이 일치해야 합니다"));
+      verify(jwtProvider, times(1)).extractRefreshToken(request);
+      verify(jwtProvider, times(1)).getSubject(testRefreshToken);
+      verify(jwtProvider, times(1)).generateAccessToken(testId);
+      verify(jwtProvider, times(1)).generateRefreshToken(testId);
+    }
+
+    @Test
+    @DisplayName("토큰이 유효하지 않으면 예외를 발생시킵니다.")
+    void refresh_Fail_Invalid_Token() {
+      // give
+      HttpServletRequest request = mock(HttpServletRequest.class);
+      when(jwtProvider.extractRefreshToken(request)).thenReturn(Optional.empty());
+
+      // when
+      AuthException exception =
+          assertThrows(
+              AuthException.class,
+              () -> authCommandService.refresh(request),
+              "유효하지 않은 토큰으로 예외가 발생해야 합니다");
+
+      // then
+      assertEquals(
+          GlobalErrorCode.INVALID_TOKEN, exception.getErrorCode(), "에러 코드는 INVALID_TOKEN이어야 합니다");
+      verify(jwtProvider, times(1)).extractRefreshToken(request);
+      verify(jwtProvider, never()).getSubject(anyString());
       verify(jwtProvider, never()).generateAccessToken(anyLong());
       verify(jwtProvider, never()).generateRefreshToken(anyLong());
     }

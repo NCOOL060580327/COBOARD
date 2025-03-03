@@ -12,35 +12,27 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-public class SignUpApiDocs {
+public class RefreshApiDocs {
 
-  @Operation(summary = "회원가입", description = "새로운 회원을 등록합니다.")
+  @Operation(summary = "토큰 재발급", description = "토큰을 재발급합니다.")
   @ApiResponses(
       value = {
         @ApiResponse(
-            responseCode = "201",
-            description = "회원가입 성공",
+            responseCode = "200",
+            description = "토큰 갱신 성공",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.SIGNUP_SUCCESS))),
+                    examples = @ExampleObject(value = SwaggerConst.REFRESH_SUCCESS))),
         @ApiResponse(
-            responseCode = "400",
-            description = "유효하지 않은 비밀번호",
+            responseCode = "401",
+            description = "유효하지 않은 토큰",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.NOT_VALID_PASSWORD))),
-        @ApiResponse(
-            responseCode = "409",
-            description = "이미 존재하는 이메일",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.DUPLICATE_EMAIL)))
+                    examples = @ExampleObject(value = SwaggerConst.INVALID_TOKEN)))
       })
-  public void signUpMember() {}
+  public void refresh() {}
 }
