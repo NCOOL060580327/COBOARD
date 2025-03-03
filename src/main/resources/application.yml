@@ -26,6 +26,10 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-h2.sql
 
 ---
 #actuator
