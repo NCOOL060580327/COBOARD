@@ -35,8 +35,6 @@ public class MemberQueryServiceTest {
   private final String testPassword = MemberTestConst.TEST_PASSWORD.getValue();
   private final String testNickname = MemberTestConst.TEST_NICKNAME.getValue();
   private final String testProfileImage = MemberTestConst.TEST_PROFILE_IMAGE.getValue();
-  private final String testAccessToken = MemberTestConst.TEST_ACCESS_TOKEN.getValue();
-  private final String testRefreshToken = MemberTestConst.TEST_REFRESH_TOKEN.getValue();
 
   @BeforeEach
   void setUp() {}

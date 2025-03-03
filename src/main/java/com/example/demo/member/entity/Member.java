@@ -2,10 +2,7 @@ package com.example.demo.member.entity;
 
 import jakarta.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "member")
@@ -38,6 +35,10 @@ public class Member {
 
   @Enumerated(EnumType.STRING)
   private Tier tier;
+
+  @Column(name = "refresh_token")
+  @Setter
+  private String refreshToken;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "member_role")

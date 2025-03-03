@@ -86,20 +86,38 @@ public class AuthCommandService {
     String accessToken = jwtProvider.generateAccessToken(member.getId());
     String refreshToken = jwtProvider.generateRefreshToken(member.getId());
 
+    member.setRefreshToken(refreshToken);
+
+    memberRepository.save(member);
+
     return LoginWithRefreshResponseDto.from(member, accessToken, refreshToken);
   }
 
-  public RefreshResponseDto refresh(HttpServletRequest request) {
+  /**
+   * 주어진 refreshToken을 검증하고, 새 토큰을 발급합니다.
+   *
+   * @param request HTTP 요청(쿠키)
+   * @param member refreshToken과 연결된 회원 정보
+   * @return 새로 발급된 access, refresh 토큰
+   * @throws AuthException {@code GlobalErrorCode.INVALID_TOKEN} - 요청에서 유효한 토큰을 찾지 못한 경우
+   * @throws AuthException {@code GlboalErrorCode.REFRESH_TOKEN_MISMATCH} - 저장된 refreshToken과 요청이 다른
+   *     경우
+   */
+  public RefreshResponseDto refresh(HttpServletRequest request, Member member) {
 
     String refreshToken =
         jwtProvider
             .extractRefreshToken(request)
             .orElseThrow(() -> new AuthException(GlobalErrorCode.INVALID_TOKEN));
 
-    Long memberId = jwtProvider.getSubject(refreshToken);
+    if (!refreshToken.equals(member.getRefreshToken())) {
+      throw new AuthException(GlobalErrorCode.REFRESH_TOKEN_MISMATCH);
+    }
 
-    String newAccessToken = jwtProvider.generateAccessToken(memberId);
-    String newRefreshToken = jwtProvider.generateRefreshToken(memberId);
+    String newAccessToken = jwtProvider.generateAccessToken(member.getId());
+    String newRefreshToken = jwtProvider.generateRefreshToken(member.getId());
+
+    member.setRefreshToken(newRefreshToken);
 
     return new RefreshResponseDto(newAccessToken, newRefreshToken);
   }

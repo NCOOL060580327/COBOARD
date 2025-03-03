@@ -37,6 +37,7 @@ public enum GlobalErrorCode {
   INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "40101", "유효하지 않은 토큰입니다."),
   AUTHENTICATION_REQUIRED(HttpStatus.UNAUTHORIZED, "40102", "인증이 필요합니다."),
   TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "40103", "토큰의 유효기간이 지났습니다."),
+  REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "40104", "토큰이 일치하지 않습니다."),
 
   // 403 Forbidden
   ACCESS_DENIED(HttpStatus.FORBIDDEN, "40301", "권한이 없습니다."),

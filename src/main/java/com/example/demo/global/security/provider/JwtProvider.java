@@ -101,7 +101,6 @@ public class JwtProvider {
     }
   }
 
-  /** 쿠키에서 refreshToken 추출 */
   public Optional<String> extractRefreshToken(HttpServletRequest request) {
     if (request.getCookies() == null) {
       return Optional.empty();
