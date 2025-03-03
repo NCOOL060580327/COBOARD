@@ -32,6 +32,7 @@ public enum GlobalErrorCode {
   NOT_VALID_PASSWORD(HttpStatus.BAD_REQUEST, "40001", "비밀번호는 영문, 숫자, 특수문자를 포함한 9~16글자여야 합니다."),
   MALFORMED_TOKEN(HttpStatus.BAD_REQUEST, "40002", "토큰의 형식이 올바르지 않습니다."),
   PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "40003", "비밀번호가 일치하지 않습니다."),
+  ALREADY_BLACKLIST_TOKEN(HttpStatus.BAD_REQUEST, "40004", "이미 블랙리스트에 존재합니다."),
 
   // 401 Unauthorized
   INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "40101", "유효하지 않은 토큰입니다."),
