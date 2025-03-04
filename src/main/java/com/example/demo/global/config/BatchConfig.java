@@ -15,6 +15,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.example.demo.member.batch.BlackListCleanUpTasklet;
+import com.example.demo.member.batch.RefreshTokenItemReader;
+import com.example.demo.member.batch.RefreshTokenItemWriter;
+import com.example.demo.member.entity.RefreshTokenBlackList;
 import com.example.demo.member.entity.repository.RefreshTokenBlackListRepository;
 
 @Configuration
@@ -22,9 +25,17 @@ import com.example.demo.member.entity.repository.RefreshTokenBlackListRepository
 public class BatchConfig {
 
   @Bean
-  public Job blacklistCleanupJob(JobRepository jobRepository, Step tokenCleanupStep) {
-    return new JobBuilder("blacklistCleanupJob", jobRepository)
-        .start(tokenCleanupStep)
+  public Job blacklistCleanupTaskletJob(JobRepository jobRepository, Step blacklistCleanupStep) {
+    return new JobBuilder("blacklistCleanuptaskletJob", jobRepository)
+        .start(blacklistCleanupStep)
+        .preventRestart()
+        .build();
+  }
+
+  @Bean
+  public Job blacklistCleanupChunkJob(JobRepository jobRepository, Step blacklistCleanupChunkStep) {
+    return new JobBuilder("blacklistCleanupChunkJob", jobRepository)
+        .start(blacklistCleanupChunkStep)
         .preventRestart()
         .build();
   }
@@ -36,6 +47,19 @@ public class BatchConfig {
       PlatformTransactionManager transactionManager) {
     return new StepBuilder("blacklistCleanupStep", jobRepository)
         .tasklet(tokenCleanupTasklet, transactionManager)
+        .build();
+  }
+
+  @Bean
+  public Step blacklistCleanupChunkStep(
+      JobRepository jobRepository,
+      RefreshTokenItemReader itemReader,
+      RefreshTokenItemWriter itemWriter,
+      PlatformTransactionManager transactionManager) {
+    return new StepBuilder("blacklistCleanupChunkStep", jobRepository)
+        .<RefreshTokenBlackList, RefreshTokenBlackList>chunk(1000, transactionManager)
+        .reader(itemReader)
+        .writer(itemWriter)
         .build();
   }
 

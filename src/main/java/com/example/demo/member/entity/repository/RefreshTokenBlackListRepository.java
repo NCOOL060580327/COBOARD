@@ -1,6 +1,7 @@
 package com.example.demo.member.entity.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,4 +24,6 @@ public interface RefreshTokenBlackListRepository
     WHERE t.expiredAt <= :now
     """)
   int deleteExpiredTokens(@Param("now") LocalDateTime now);
+
+  List<RefreshTokenBlackList> findAllByExpiredAtBefore(LocalDateTime now);
 }
