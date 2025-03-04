@@ -34,7 +34,6 @@ public class BlackListBatchScheduler {
     runJob(blackListCleanupTaskletJob, "Tasklet");
   }
 
-  @Scheduled(cron = "0 30 0,6,12,18 * * ?")
   public void runBlacklistCleanupChunkJob() throws JobExecutionException {
     runJob(blacklistCleanupChunkJob, "Chunk");
   }

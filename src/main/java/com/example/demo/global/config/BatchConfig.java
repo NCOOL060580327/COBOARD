@@ -43,10 +43,10 @@ public class BatchConfig {
   @Bean
   public Step blacklistCleanupStep(
       JobRepository jobRepository,
-      Tasklet tokenCleanupTasklet,
+      Tasklet blacklistCleanupTasklet,
       PlatformTransactionManager transactionManager) {
     return new StepBuilder("blacklistCleanupStep", jobRepository)
-        .tasklet(tokenCleanupTasklet, transactionManager)
+        .tasklet(blacklistCleanupTasklet, transactionManager)
         .build();
   }
 

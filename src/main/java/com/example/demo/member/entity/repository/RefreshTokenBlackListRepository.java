@@ -25,5 +25,10 @@ public interface RefreshTokenBlackListRepository
     """)
   int deleteExpiredTokens(@Param("now") LocalDateTime now);
 
+  @Modifying
+  @Transactional
+  @Query(value = "DELETE FROM refresh_token_black_list WHERE expired_at < :now", nativeQuery = true)
+  int deleteExpiredTokensNativeQuery(@Param("now") LocalDateTime now);
+
   List<RefreshTokenBlackList> findAllByExpiredAtBefore(LocalDateTime now);
 }

@@ -20,7 +20,8 @@ public class BlackListCleanUpTasklet implements Tasklet {
   @Override
   public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
     try {
-      int deletedCount = refreshTokenBlackListRepository.deleteExpiredTokens(LocalDateTime.now());
+      int deletedCount =
+          refreshTokenBlackListRepository.deleteExpiredTokensNativeQuery(LocalDateTime.now());
       if (deletedCount == 0) {
         log.info("만료된 토큰이 없습니다.");
       } else {
