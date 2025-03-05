@@ -3,8 +3,8 @@ package com.example.demo.member.service.query;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.global.annotation.ReadOnlyTransactional;
 import com.example.demo.global.exception.GlobalErrorCode;
 import com.example.demo.global.exception.custom.AuthException;
 import com.example.demo.global.exception.custom.MemberException;
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@ReadOnlyTransactional
 public class AuthQueryService {
 
   private final MemberRepository memberRepository;

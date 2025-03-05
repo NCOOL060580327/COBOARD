@@ -1,8 +1,8 @@
 package com.example.demo.member.service.query;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.global.annotation.ReadOnlyTransactional;
 import com.example.demo.global.exception.GlobalErrorCode;
 import com.example.demo.global.exception.custom.MemberException;
 import com.example.demo.global.security.provider.JwtProvider;
@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@ReadOnlyTransactional
 public class MemberQueryService {
 
   private final MemberRepository memberRepository;
