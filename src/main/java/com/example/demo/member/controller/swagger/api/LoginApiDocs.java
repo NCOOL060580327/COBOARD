@@ -3,7 +3,7 @@ package com.example.demo.member.controller.swagger.api;
 import org.springframework.http.MediaType;
 
 import com.example.demo.global.response.BaseResponse;
-import com.example.demo.member.controller.swagger.SwaggerConst;
+import com.example.demo.member.controller.swagger.MemberSwaggerConst;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +24,7 @@ public class LoginApiDocs {
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.LOGIN_SUCCESS))),
+                    examples = @ExampleObject(value = MemberSwaggerConst.LOGIN_SUCCESS))),
         @ApiResponse(
             responseCode = "400",
             description = "비밀번호 불일치",
@@ -32,7 +32,7 @@ public class LoginApiDocs {
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.PASSWORD_MISMATCH))),
+                    examples = @ExampleObject(value = MemberSwaggerConst.PASSWORD_MISMATCH))),
         @ApiResponse(
             responseCode = "404",
             description = "회원이 존재하지 않음",
@@ -40,7 +40,7 @@ public class LoginApiDocs {
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.MEMBER_NOT_FOUND)))
+                    examples = @ExampleObject(value = MemberSwaggerConst.MEMBER_NOT_FOUND)))
       })
   public void login() {}
 }

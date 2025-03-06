@@ -3,6 +3,7 @@ package com.example.demo.global.response;
 import java.time.LocalDateTime;
 
 import com.example.demo.global.exception.GlobalErrorCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -26,6 +27,7 @@ public class BaseResponse<T> {
   private T data;
 
   @JsonProperty("timestamp")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
   private final LocalDateTime timestamp;
 
   // 성공한 경우 응답 생성

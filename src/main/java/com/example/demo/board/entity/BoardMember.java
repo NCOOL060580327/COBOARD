@@ -29,4 +29,12 @@ public class BoardMember {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
+
+  public static BoardMember createLeaderBoardMember(Board board, Member member) {
+    return BoardMember.builder().board(board).member(member).isLeader(true).build();
+  }
+
+  public static BoardMember createRegularBoardMember(Board board, Member member) {
+    return BoardMember.builder().board(board).member(member).isLeader(false).build();
+  }
 }

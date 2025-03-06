@@ -12,35 +12,29 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-public class SignUpApiDocs {
+public class GetMemberByIdentifiedCodeApiDocs {
 
-  @Operation(summary = "회원가입", description = "새로운 회원을 등록합니다.")
+  @Operation(summary = "게시판 생성", description = "게시판을 생성하고 회원을 초대합니다.")
   @ApiResponses(
       value = {
         @ApiResponse(
-            responseCode = "201",
-            description = "회원가입 성공",
+            responseCode = "200",
+            description = "요청 성공",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = MemberSwaggerConst.SIGNUP_SUCCESS))),
+                    examples =
+                        @ExampleObject(
+                            value = MemberSwaggerConst.GET_MEMBER_BY_IDENTIFIED_CODE_SUCCESS))),
         @ApiResponse(
-            responseCode = "400",
-            description = "유효하지 않은 비밀번호",
+            responseCode = "404",
+            description = "회원이 존재하지 않음",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = MemberSwaggerConst.NOT_VALID_PASSWORD))),
-        @ApiResponse(
-            responseCode = "409",
-            description = "이미 존재하는 이메일",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = MemberSwaggerConst.DUPLICATE_EMAIL)))
+                    examples = @ExampleObject(value = MemberSwaggerConst.MEMBER_NOT_FOUND)))
       })
-  public void signUpMember() {}
+  public void getMemberByIdentifiedCode() {}
 }

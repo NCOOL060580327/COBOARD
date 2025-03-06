@@ -3,7 +3,7 @@ package com.example.demo.member.controller.swagger.api;
 import org.springframework.http.MediaType;
 
 import com.example.demo.global.response.BaseResponse;
-import com.example.demo.member.controller.swagger.SwaggerConst;
+import com.example.demo.member.controller.swagger.MemberSwaggerConst;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +24,7 @@ public class RefreshApiDocs {
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.REFRESH_SUCCESS))),
+                    examples = @ExampleObject(value = MemberSwaggerConst.REFRESH_SUCCESS))),
         @ApiResponse(
             responseCode = "401",
             description = "유효하지 않은 토큰",
@@ -32,7 +32,7 @@ public class RefreshApiDocs {
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(value = SwaggerConst.INVALID_TOKEN)))
+                    examples = @ExampleObject(value = MemberSwaggerConst.INVALID_TOKEN)))
       })
   public void refresh() {}
 }

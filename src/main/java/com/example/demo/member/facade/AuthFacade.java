@@ -31,7 +31,7 @@ public class AuthFacade {
    */
   public void signUpMember(SignUpMemberRequestDto requestDto) {
 
-    memberQueryService.isValidEmail(requestDto.email());
+    authQueryService.isValidEmail(requestDto.email());
 
     authCommandService.signUpMember(requestDto);
   }

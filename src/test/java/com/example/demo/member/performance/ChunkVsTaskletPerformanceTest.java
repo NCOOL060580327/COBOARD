@@ -1,4 +1,4 @@
-package com.example.demo.Member.performance;
+package com.example.demo.member.performance;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

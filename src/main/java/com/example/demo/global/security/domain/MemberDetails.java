@@ -23,6 +23,10 @@ public class MemberDetails implements UserDetails {
     return roles.stream().map(SimpleGrantedAuthority::new).toList();
   }
 
+  public Member getMember() {
+    return member;
+  }
+
   @Override
   public String getPassword() {
     return member.getPassword().getPassword();

@@ -1,4 +1,4 @@
-package com.example.demo.Member;
+package com.example.demo.member;
 
 public enum MemberTestConst {
   TEST_ID("1"),
@@ -8,6 +8,7 @@ public enum MemberTestConst {
   TEST_PROFILE_IMAGE("profile.jpg"),
   TEST_ACCESS_TOKEN("testAccessToken"),
   TEST_REFRESH_TOKEN("testRefreshToken"),
+  TEST_IDENTIFIED_CODE("testIdentifiedCode"),
   ;
 
   private final String value;
