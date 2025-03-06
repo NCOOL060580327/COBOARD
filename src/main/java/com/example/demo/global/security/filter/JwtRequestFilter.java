@@ -9,15 +9,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.demo.global.exception.GlobalErrorCode;
 import com.example.demo.global.exception.custom.MemberException;
 import com.example.demo.global.exception.custom.TokenException;
+import com.example.demo.global.security.domain.MemberDetails;
 import com.example.demo.global.security.provider.JwtProvider;
+import com.example.demo.global.security.service.MemberDetailsService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
   private static final String BEARER_PREFIX = "Bearer ";
 
   private final JwtProvider jwtProvider;
-  private final UserDetailsService userDetailsService;
+  private final MemberDetailsService memberDetailsService;
 
   @Override
   protected void doFilterInternal(
@@ -57,7 +57,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     Long userId = jwtProvider.getSubject(token);
-    UserDetails userDetails = userDetailsService.loadUserByUsername(userId.toString());
+    MemberDetails userDetails = memberDetailsService.loadUserByUsername(userId.toString());
 
     if (userDetails == null) {
       log.error("userId에 해당하는 사용자를 찾을 수 없습니다.: {}", userId);

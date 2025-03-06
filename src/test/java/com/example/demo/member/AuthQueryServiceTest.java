@@ -1,4 +1,4 @@
-package com.example.demo.Member;
+package com.example.demo.member;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -45,6 +45,39 @@ public class AuthQueryServiceTest {
 
   @BeforeEach
   void setUp() {}
+
+  @Nested
+  @DisplayName("이메일 중복 확인 시")
+  class isValidEmail {
+
+    @Test
+    @DisplayName("중복되는 메일이 있는지 확인합니다.")
+    void isValidEmail_Success() {
+      // give
+      when(memberRepository.existsByEmail(testEmail)).thenReturn(false);
+
+      // when
+      authQueryService.isValidEmail(testEmail);
+
+      // then
+      verify(memberRepository, times(1)).existsByEmail(testEmail);
+    }
+
+    @Test
+    @DisplayName("중복될 경우 예외를 발생시킵니다.")
+    void isValidEmail_Fail() {
+      // give
+      when(memberRepository.existsByEmail(testEmail)).thenReturn(true);
+
+      // when
+      MemberException exception =
+          assertThrows(MemberException.class, () -> authQueryService.isValidEmail(testEmail));
+
+      // then
+      verify(memberRepository, times(1)).existsByEmail(testEmail);
+      assertEquals(GlobalErrorCode.DUPLICATE_EMAIL, exception.getErrorCode());
+    }
+  }
 
   @Nested
   @DisplayName("토큰을 통해 유저를 조회 때")

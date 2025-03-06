@@ -1,4 +1,4 @@
-package com.example.demo.Member.performance;
+package com.example.demo.member.performance;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

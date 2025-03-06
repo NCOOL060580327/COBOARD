@@ -21,5 +21,5 @@ public class Board {
   private String name;
 
   @Column(name = "thumbnail_image")
-  private String thumbnailImage = "default-thumbnail.png";
+  private String thumbnailImage;
 }

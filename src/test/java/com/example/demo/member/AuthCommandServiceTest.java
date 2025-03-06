@@ -1,4 +1,4 @@
-package com.example.demo.Member;
+package com.example.demo.member;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
