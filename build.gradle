@@ -24,6 +24,21 @@ repositories {
 	mavenCentral()
 }
 
+spotless {
+	java {
+		// Google Java 포맷 적용
+		googleJavaFormat()
+		// 아래 순서로 import문 정렬
+		importOrder('java', 'javax', 'jakarta', 'org', 'com')
+		// 사용하지 않는 import 제거
+		removeUnusedImports()
+		// 각 라인 끝에 있는 공백을 제거
+		trimTrailingWhitespace()
+		// 파일 끝에 새로운 라인 추가
+		endWithNewline()
+	}
+}
+
 dependencies {
 
 	// jpa
@@ -61,24 +76,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation'org.springframework.boot:spring-boot-starter-quartz'
 
+	// querydsl
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-spotless {
-	java {
-		// Google Java 포맷 적용
-		googleJavaFormat()
-		// 아래 순서로 import문 정렬
-		importOrder('java', 'javax', 'jakarta', 'org', 'com')
-		// 사용하지 않는 import 제거
-		removeUnusedImports()
-		// 각 라인 끝에 있는 공백을 제거
-		trimTrailingWhitespace()
-		// 파일 끝에 새로운 라인 추가
-		endWithNewline()
-	}
-}
 
 tasks.named('test') {
 	useJUnitPlatform()
@@ -95,4 +102,16 @@ tasks.register('addGitHooks', Copy) {
 	filePermissions {
 		unix('r-xr-xr-x')
 	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs << "-Aquerydsl.generatedAnnotationProcessorDirectory=src/main/generated"
+}
+
+sourceSets {
+	main.java.srcDirs += "src/main/generated"
+}
+
+clean {
+	delete file("src/main/generated")
 }
