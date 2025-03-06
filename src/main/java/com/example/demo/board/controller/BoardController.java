@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.board.controller.swagger.api.CreateBoardApiDocs;
 import com.example.demo.board.dto.BoardCreateRequestDto;
 import com.example.demo.board.dto.BoardCreateResponseDto;
 import com.example.demo.board.facade.BoardFacade;
+import com.example.demo.global.annotation.SwaggerDocs;
 import com.example.demo.global.exception.GlobalErrorCode;
 import com.example.demo.global.response.BaseResponse;
 import com.example.demo.global.security.domain.MemberDetails;
@@ -25,7 +27,8 @@ public class BoardController {
   private final BoardFacade boardFacade;
 
   @PostMapping("/")
-  public ResponseEntity<BaseResponse<BoardCreateResponseDto>> creatBoard(
+  @SwaggerDocs(CreateBoardApiDocs.class)
+  public ResponseEntity<BaseResponse<BoardCreateResponseDto>> createBoard(
       @RequestBody BoardCreateRequestDto requestDto,
       @AuthenticationPrincipal MemberDetails memberDetails) {
 

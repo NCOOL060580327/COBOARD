@@ -1,6 +1,6 @@
 package com.example.demo.member.controller.swagger;
 
-public class SwaggerConst {
+public class MemberSwaggerConst {
 
   public static final String SIGNUP_SUCCESS =
       """
@@ -92,4 +92,18 @@ public class SwaggerConst {
             "divideCode": "40101"
           }
           """;
+
+  public static final String GET_MEMBER_BY_IDENTIFIED_CODE_SUCCESS =
+      """
+        {
+          "isSuccess": true,
+          "code": "200",
+          "message": "요청 성공",
+          "divideCode": "20001",
+          "data": {
+            "nickname": "testNickname",
+            "identifiedCode": "testNickname#24af7519"
+          }
+        }
+      """;
 }
