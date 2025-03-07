@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 public class GetMemberByIdentifiedCodeApiDocs {
 
-  @Operation(summary = "게시판 생성", description = "게시판을 생성하고 회원을 초대합니다.")
+  @Operation(summary = "식별코드로 회원 조회", description = "식별코드를 통해 회원을 조회합니다.")
   @ApiResponses(
       value = {
         @ApiResponse(

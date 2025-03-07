@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.demo.board.entity.Board;
 import com.example.demo.board.entity.BoardMember;
 import com.example.demo.board.entity.repository.BoardMemberRepository;
-import com.example.demo.board.service.BoardMemberCommandService;
+import com.example.demo.board.service.command.BoardMemberCommandService;
 import com.example.demo.member.entity.Member;
 
 @ExtendWith(MockitoExtension.class)

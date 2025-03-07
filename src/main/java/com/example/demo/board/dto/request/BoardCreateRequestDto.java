@@ -1,4 +1,4 @@
-package com.example.demo.board.dto;
+package com.example.demo.board.dto.request;
 
 import java.util.List;
 
