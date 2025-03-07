@@ -1,4 +1,4 @@
-package com.example.demo.board.service;
+package com.example.demo.board.service.command;
 
 import java.util.List;
 

@@ -15,14 +15,20 @@ public class BoardSwaggerConst {
               }
               """;
 
-  public static final String MEMBER_NOT_FOUND =
+  public static final String GET_MY_BOARD_LIST_SUCCESS =
       """
+          {
+            "isSuccess": true,
+            "code": "200",
+            "message": "요청에 성공하였습니다.",
+            "divideCode": "success",
+            "data": [
               {
-                "isSuccess": false,
-                "code": "404",
-                "message": "등록된 사용자가 없습니다.",
-                "divideCode": "40401",
-                "data": null
+                "id": 1,
+                "name": "string1",
+                "thumbnailImage": "string"
               }
-            """;
+            ]
+          }
+          """;
 }

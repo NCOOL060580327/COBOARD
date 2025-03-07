@@ -13,10 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.demo.board.dto.BoardCreateRequestDto;
+import com.example.demo.board.dto.request.BoardCreateRequestDto;
 import com.example.demo.board.entity.Board;
 import com.example.demo.board.entity.repository.BoardRepository;
-import com.example.demo.board.service.BoardCommandService;
+import com.example.demo.board.service.command.BoardCommandService;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardCommandServiceTest {

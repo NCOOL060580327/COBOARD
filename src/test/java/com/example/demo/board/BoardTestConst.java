@@ -5,7 +5,9 @@ public enum BoardTestConst {
   TEST_NAME("testBoard"),
   TEST_THUMBNAIL("testThumbnail"),
   DEFAULT_THUMBNAIL("default-thumbnail.png"),
-  ;
+  TEST_MEMBER_ID("1"),
+  TEST_LAST_BOARD_ID("10"),
+  TEST_PAGE_SIZE("5");
 
   private final String value;
 

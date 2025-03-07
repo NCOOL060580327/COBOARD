@@ -1,9 +1,9 @@
-package com.example.demo.board.service;
+package com.example.demo.board.service.command;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.board.dto.BoardCreateRequestDto;
+import com.example.demo.board.dto.request.BoardCreateRequestDto;
 import com.example.demo.board.entity.Board;
 import com.example.demo.board.entity.repository.BoardRepository;
 
