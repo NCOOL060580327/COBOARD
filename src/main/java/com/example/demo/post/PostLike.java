@@ -1,34 +1,34 @@
-package com.example.demo.quiz.entity;
+package com.example.demo.post;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
-import com.example.demo.board.entity.Board;
+import com.example.demo.board.entity.BoardMember;
 
 import lombok.*;
 
 @Entity
-@Table(name = "daily_problem")
+@Table(name = "post_like")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class DailyProblem {
+public class PostLike {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "daily_problem_id")
+  @Column(name = "post_like_id")
   private Long id;
 
   @Column(name = "created_at")
-  private LocalDate createdAt;
+  private LocalDateTime createdAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "problem_id")
-  private Problem problem;
+  @JoinColumn(name = "post_id")
+  private Post post;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "board_id")
-  private Board board;
+  @JoinColumn(name = "board_member_id")
+  private BoardMember boardMember;
 }
