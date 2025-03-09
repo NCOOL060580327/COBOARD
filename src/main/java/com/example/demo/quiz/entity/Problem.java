@@ -1,4 +1,4 @@
-package com.example.demo.quiz;
+package com.example.demo.quiz.entity;
 
 import java.util.ArrayList;
 import java.util.List;
