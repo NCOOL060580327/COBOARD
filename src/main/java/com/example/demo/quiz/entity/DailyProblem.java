@@ -1,4 +1,6 @@
-package com.example.demo.quiz;
+package com.example.demo.quiz.entity;
+
+import java.time.LocalDate;
 
 import jakarta.persistence.*;
 
@@ -18,6 +20,9 @@ public class DailyProblem {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "daily_problem_id")
   private Long id;
+
+  @Column(name = "created_at")
+  private LocalDate createdAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Problem problem;

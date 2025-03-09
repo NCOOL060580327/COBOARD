@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,19 +17,28 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.demo.board.dto.response.GetMyBoardListResponseDto;
+import com.example.demo.board.entity.Board;
 import com.example.demo.board.entity.repository.BoardQueryDslRepository;
+import com.example.demo.board.entity.repository.BoardRepository;
 import com.example.demo.board.service.query.BoardQueryService;
+import com.example.demo.global.exception.GlobalErrorCode;
+import com.example.demo.global.exception.custom.BoardException;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardQueryServiceTest {
 
   @Mock private BoardQueryDslRepository boardQueryDslRepository;
 
+  @Mock private BoardRepository boardRepository;
+
   @InjectMocks private BoardQueryService boardQueryService;
 
+  private final Long testBoardId = Long.parseLong(BoardTestConst.TEST_ID.getValue());
   private final Long testMemberId = Long.parseLong(BoardTestConst.TEST_MEMBER_ID.getValue());
   private final Long testLastBoardId = Long.parseLong(BoardTestConst.TEST_LAST_BOARD_ID.getValue());
   private final int testPageSize = Integer.parseInt(BoardTestConst.TEST_PAGE_SIZE.getValue());
+  private final String testName = BoardTestConst.TEST_NAME.getValue();
+  private final String testThumbnail = BoardTestConst.TEST_THUMBNAIL.getValue();
 
   @BeforeEach
   void setUp() {}
@@ -77,6 +87,43 @@ public class BoardQueryServiceTest {
       assertTrue(result.isEmpty(), "빈 리스트가 반환되어야 합니다");
       verify(boardQueryDslRepository, times(1))
           .findBoardListByMemberId(testMemberId, testLastBoardId, testPageSize);
+    }
+  }
+
+  @Nested
+  @DisplayName("게시판 ID를 통해 게시판을 조회할 떄")
+  class getBoardById {
+    @Test
+    @DisplayName("게시판을 반환합니다.")
+    void getBoardById_Success() {
+      // give
+      Board testBoard = Board.builder().name(testName).thumbnailImage(testThumbnail).build();
+
+      when(boardRepository.findById(testBoardId)).thenReturn(Optional.of(testBoard));
+
+      // when
+      Board board = boardQueryService.getBoardById(testBoardId);
+
+      // then
+      assertNotNull(board, "반환된 게시판이 null이면 안됩니다.");
+      assertEquals(testName, board.getName(), "게시판 제목이 일치해야힙니다.");
+      assertEquals(testThumbnail, board.getThumbnailImage(), "게시판 썸네일이 일치해야합니다.");
+      verify(boardRepository, times(1)).findById(testBoardId);
+    }
+
+    @Test
+    @DisplayName("게시판이 존재하지 않으면 예외를 발생시킵니다.")
+    void getBoardById_Fail_Board_Not_Found() {
+      // give
+      when(boardRepository.findById(testBoardId)).thenReturn(Optional.empty());
+
+      // when
+      BoardException exception =
+          assertThrows(BoardException.class, () -> boardQueryService.getBoardById(testBoardId));
+
+      // when
+      assertEquals(GlobalErrorCode.BOARD_NOT_FOUND, exception.getErrorCode(), "예외코드가 일치해야합니다.");
+      verify(boardRepository, times(1)).findById(testBoardId);
     }
   }
 }
