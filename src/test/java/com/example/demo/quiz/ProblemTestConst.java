@@ -1,6 +1,7 @@
 package com.example.demo.quiz;
 
 public enum ProblemTestConst {
+  TEST_ID("1"),
   TEST_TITLE("Test Problem"),
   TEST_DESCRIPTION("testDescription"),
   TEST_SOURCE("testSource"),
