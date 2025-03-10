@@ -1,8 +1,10 @@
-package com.example.demo.post;
+package com.example.demo.post.entity;
 
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
+
+import com.example.demo.board.entity.BoardMember;
 
 import lombok.*;
 
@@ -21,14 +23,22 @@ public class Post {
 
   private String title;
 
+  @Setter @Embedded private PostCode postCode;
+
   @Setter
   @Column(name = "like_count", nullable = false)
+  @Builder.Default
   private Integer likeCount = 0;
 
   @Setter
   @Column(name = "average_rating")
-  private Float averageRating;
+  @Builder.Default
+  private Float averageRating = 0F;
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "board_member_id")
+  private BoardMember boardMember;
 }

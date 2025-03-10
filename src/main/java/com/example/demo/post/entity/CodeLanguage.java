@@ -1,4 +1,4 @@
-package com.example.demo.post;
+package com.example.demo.post.entity;
 
 public enum CodeLanguage {
   C,
