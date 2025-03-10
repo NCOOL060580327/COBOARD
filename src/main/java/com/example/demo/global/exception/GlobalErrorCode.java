@@ -47,6 +47,7 @@ public enum GlobalErrorCode {
   MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "40401", "등록된 사용자가 없습니다."),
   PROBLEM_NOT_FOUND(HttpStatus.NOT_FOUND, "40402", "등록된 문제가 없습니다."),
   BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "40403", "등록된 게시판이 없습니다."),
+  BOARD_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "40404", "등록된 게시판 사용자가 없습니다."),
 
   // 409 Conflict
   DUPLICATE_EMAIL(HttpStatus.CONFLICT, "40901", "이미 등록된 이메일입니다.");
