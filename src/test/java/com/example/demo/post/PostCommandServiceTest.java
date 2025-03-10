@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.example.demo.board.entity.Board;
 import com.example.demo.board.entity.BoardMember;
 import com.example.demo.post.dto.CreatePostRequestDto;
 import com.example.demo.post.entity.CodeLanguage;
@@ -52,19 +53,22 @@ public class PostCommandServiceTest {
       PostCode testPostCode =
           PostCode.builder().language(CodeLanguage.C).content(requestDto.content()).build();
 
+      Board mockBoard = mock(Board.class);
+
       BoardMember mockBoardMember = mock(BoardMember.class);
 
       Post testPost =
           Post.builder()
               .title(requestDto.title())
               .postCode(testPostCode)
+              .board(mockBoard)
               .boardMember(mockBoardMember)
               .build();
 
       when(postJpaRepository.save(any(Post.class))).thenReturn(testPost);
 
       // when
-      postCommandService.createPost(requestDto, mockBoardMember);
+      postCommandService.createPost(requestDto, mockBoardMember, mockBoard);
 
       // then
       ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
@@ -76,6 +80,7 @@ public class PostCommandServiceTest {
           requestDto.language(), capturedPost.getPostCode().getLanguage(), "게시글 코드 언어가 일치해야합니다.");
       assertEquals(
           requestDto.content(), capturedPost.getPostCode().getContent(), "게시글의 코드가 일치해야합니다.");
+      assertEquals(mockBoard, capturedPost.getBoard(), "게시판과 게시된 게시판이 일치해야합니다.");
       assertEquals(mockBoardMember, capturedPost.getBoardMember(), "작성자와 게시글 회원이 일치해야합니다.");
     }
   }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+import com.example.demo.board.entity.Board;
 import com.example.demo.board.entity.BoardMember;
 
 import lombok.*;
@@ -37,6 +38,10 @@ public class Post {
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "board_id")
+  private Board board;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "board_member_id")
