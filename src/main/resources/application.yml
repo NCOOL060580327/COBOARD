@@ -18,7 +18,7 @@ spring:
       settings:
         web-allow-others: true
   datasource:
-    url: jdbc:h2:mem:test;CACHE_SIZE=131072
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;LOCK_MODE=0
     driver-class-name: org.h2.Driver
     username: test
     password: test
@@ -29,10 +29,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
   sql:
     init:
       mode: always
       schema-locations: classpath:schema-h2.sql
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.engine.transaction: DEBUG
 
 ---
 #actuator

@@ -3,6 +3,7 @@ package com.example.demo.post.facade;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.board.entity.Board;
 import com.example.demo.board.entity.BoardMember;
@@ -70,19 +71,23 @@ public class PostFacade {
    * @param postId 좋아요 할 게시글 ID
    * @return 게시글 좋아요 상태 {@link PostLikeStatusResponseDto} (좋아요 상태, 설명)
    */
+  @Transactional
   public PostLikeStatusResponseDto createPostLike(Long boardId, Member member, Long postId) {
     Board board = boardQueryService.getBoardById(boardId);
 
     BoardMember boardMember = boardMemberQueryService.getBoardMemberByBoardAndMember(board, member);
 
-    Post post = postQueryService.getPostById(postId);
+    Post post = postQueryService.getPostByIdWithPessimisticLock(postId);
 
     if (postLikeQueryService.existsPostLike(post, boardMember)) {
       throw new PostException(GlobalErrorCode.DUPLICATE_LIKE);
     }
 
-    return new PostLikeStatusResponseDto(
-        postLikeCommandService.createPostLike(post, boardMember), "좋아요가 추가되었습니다.");
+    Boolean isLiked = postLikeCommandService.createPostLike(post, boardMember);
+
+    post.increaseLikeCount();
+
+    return new PostLikeStatusResponseDto(isLiked, "좋아요가 추가되었습니다.");
   }
 
   /**
@@ -93,16 +98,20 @@ public class PostFacade {
    * @param postId 좋아요 삭제 할 게시글 ID
    * @return 게시글 좋아요 상태 {@link PostLikeStatusResponseDto} (좋아요 상태, 설명)
    */
+  @Transactional
   public PostLikeStatusResponseDto deletePostLike(Long boardId, Member member, Long postId) {
     Board board = boardQueryService.getBoardById(boardId);
 
     BoardMember boardMember = boardMemberQueryService.getBoardMemberByBoardAndMember(board, member);
 
-    Post post = postQueryService.getPostById(postId);
+    Post post = postQueryService.getPostByIdWithPessimisticLock(postId);
 
     PostLike postLike = postLikeQueryService.getPostLike(post, boardMember);
 
-    return new PostLikeStatusResponseDto(
-        postLikeCommandService.deletePostLike(postLike), "좋아요가 삭제되었습니다.");
+    Boolean isLiked = postLikeCommandService.deletePostLike(postLike);
+
+    post.decreaseLikeCount();
+
+    return new PostLikeStatusResponseDto(isLiked, "좋아요가 삭제되었습니다.");
   }
 }
