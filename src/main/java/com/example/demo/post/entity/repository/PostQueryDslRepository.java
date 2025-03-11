@@ -59,7 +59,7 @@ public class PostQueryDslRepository {
                 switch (order.getProperty()) {
                   case "likeCount" -> post.likeCount.desc();
                   case "averageRating" -> post.averageRating.desc();
-                  default -> new OrderSpecifier[] {post.createdAt.desc(), post.id.desc()};
+                  default -> new OrderSpecifier[] {post.id.desc(), post.createdAt.desc()};
                 })
         .flatMap(
             spec ->

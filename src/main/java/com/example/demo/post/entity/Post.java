@@ -10,7 +10,15 @@ import com.example.demo.board.entity.BoardMember;
 import lombok.*;
 
 @Entity
-@Table(name = "post")
+@Table(
+    name = "post",
+    indexes = {
+      @Index(name = "idx_post_board_id", columnList = "board_id"),
+      @Index(name = "idx_post_created_at_post_id", columnList = "board_id, post_id, created_at"),
+      @Index(name = "idx_post_like_count", columnList = "board_id, like_count"),
+      @Index(name = "idx_post_average_rating", columnList = "board_id, average_rating"),
+      @Index(name = "idx_post_board_member_id", columnList = "board_member_id")
+    })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
