@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 public class GetPostListInBoardApiDocs {
-  @Operation(summary = "게시글 생성", description = "게시글을 생성합니다.")
+  @Operation(summary = "게시글 페이지 조회", description = "게시글을 페이지로 조회합니다.")
   @ApiResponses(
       value = {
         @ApiResponse(

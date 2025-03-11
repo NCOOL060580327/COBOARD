@@ -9,7 +9,13 @@ import com.example.demo.board.entity.BoardMember;
 import lombok.*;
 
 @Entity
-@Table(name = "post_like")
+@Table(
+    name = "post_like",
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "uk_post_like_post_board_member",
+          columnNames = {"post_id", "board_member_id"})
+    })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)

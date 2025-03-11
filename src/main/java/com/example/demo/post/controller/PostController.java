@@ -14,9 +14,12 @@ import com.example.demo.global.exception.GlobalErrorCode;
 import com.example.demo.global.response.BaseResponse;
 import com.example.demo.global.security.domain.MemberDetails;
 import com.example.demo.post.controller.swagger.api.CreatePostApiDocs;
+import com.example.demo.post.controller.swagger.api.CreatePostLikeApiDocs;
+import com.example.demo.post.controller.swagger.api.DeletePostLikeApiDocs;
 import com.example.demo.post.controller.swagger.api.GetPostListInBoardApiDocs;
 import com.example.demo.post.dto.CreatePostRequestDto;
 import com.example.demo.post.dto.GetPostListInBoardResponseDto;
+import com.example.demo.post.dto.PostLikeStatusResponseDto;
 import com.example.demo.post.facade.PostFacade;
 
 import lombok.RequiredArgsConstructor;
@@ -49,5 +52,31 @@ public class PostController {
         .body(
             BaseResponse.onSuccess(
                 GlobalErrorCode.OK, postFacade.getPostListInBoard(boardId, pageable)));
+  }
+
+  @PostMapping("/{boardId}/{postId}")
+  @SwaggerDocs(CreatePostLikeApiDocs.class)
+  public ResponseEntity<BaseResponse<PostLikeStatusResponseDto>> createPostLike(
+      @PathVariable(name = "boardId") Long boardId,
+      @PathVariable(name = "postId") Long postId,
+      @AuthenticationPrincipal MemberDetails memberDetails) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(
+            BaseResponse.onSuccess(
+                GlobalErrorCode.CREATED,
+                postFacade.createPostLike(boardId, memberDetails.getMember(), postId)));
+  }
+
+  @DeleteMapping("/{boardId}/{postId}")
+  @SwaggerDocs(DeletePostLikeApiDocs.class)
+  public ResponseEntity<BaseResponse<PostLikeStatusResponseDto>> deletePostLike(
+      @PathVariable(name = "boardId") Long boardId,
+      @PathVariable(name = "postId") Long postId,
+      @AuthenticationPrincipal MemberDetails memberDetails) {
+    return ResponseEntity.status(HttpStatus.NO_CONTENT)
+        .body(
+            BaseResponse.onSuccess(
+                GlobalErrorCode.DELETED,
+                postFacade.deletePostLike(boardId, memberDetails.getMember(), postId)));
   }
 }
