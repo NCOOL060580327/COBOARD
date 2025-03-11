@@ -48,9 +48,12 @@ public enum GlobalErrorCode {
   PROBLEM_NOT_FOUND(HttpStatus.NOT_FOUND, "40402", "등록된 문제가 없습니다."),
   BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "40403", "등록된 게시판이 없습니다."),
   BOARD_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "40404", "등록된 게시판 사용자가 없습니다."),
+  POST_NOT_FOUND(HttpStatus.NOT_FOUND, "40405", "등록된 게시물이 없습니다."),
+  POST_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "40406", "게시물 좋아요가 없습니다."),
 
   // 409 Conflict
-  DUPLICATE_EMAIL(HttpStatus.CONFLICT, "40901", "이미 등록된 이메일입니다.");
+  DUPLICATE_EMAIL(HttpStatus.CONFLICT, "40901", "이미 등록된 이메일입니다."),
+  DUPLICATE_LIKE(HttpStatus.CONFLICT, "40902", "이미 좋아요가 존재합니다.");
 
   private final HttpStatus httpStatus;
   private final String divideCode;

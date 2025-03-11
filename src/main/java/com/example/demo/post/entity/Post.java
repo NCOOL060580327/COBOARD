@@ -34,7 +34,6 @@ public class Post {
 
   @Setter @Embedded private PostCode postCode;
 
-  @Setter
   @Column(name = "like_count", nullable = false)
   @Builder.Default
   private Integer likeCount = 0;
@@ -54,4 +53,14 @@ public class Post {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "board_member_id")
   private BoardMember boardMember;
+
+  public void increaseLikeCount() {
+    this.likeCount++;
+  }
+
+  public void decreaseLikeCount() {
+    if (this.likeCount > 0) {
+      this.likeCount--;
+    }
+  }
 }
