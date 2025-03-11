@@ -9,7 +9,6 @@ public class PostSwaggerConst {
               "code": "201",
               "message": "요청 성공 및 리소스 생성됨",
               "divideCode": "20101",
-              "timestamp": "2025-03-10 14:48:53"
             }
             """;
 
@@ -34,4 +33,31 @@ public class PostSwaggerConst {
                 "data": null
               }
             """;
+
+  public static final String GET_POST_IN_BOARD_SUCCESS =
+      """
+                {
+                  "isSuccess": true,
+                  "code": "200",
+                  "message": "요청 성공",
+                  "divideCode": "20001",
+                  "data": {
+                    "content": [
+                      {
+                        "title": "string",
+                        "likeCount": 0,
+                        "averageRating": 0,
+                        "createdAt": "",
+                        "nickname": "string"
+                      }
+                    ],
+                    "page": {
+                      "size": 10,
+                      "number": 0,
+                      "totalElements": 0,
+                      "totalPages": 0
+                    }
+                  }
+                }
+                """;
 }
